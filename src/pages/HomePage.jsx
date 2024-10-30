@@ -6,7 +6,7 @@ function HomePage(props) {
     const navigate = useNavigate();
 
     return (
-        <div className='d-flex flex-column align-items-center justify-content-center'
+        <div className='w-100 text-bg-light d-flex flex-column align-items-center justify-content-center'
             style={{ height: "80vh" }}
         >
             <h1>This is HomePage</h1>
