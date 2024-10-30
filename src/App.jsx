@@ -1,4 +1,4 @@
-import { ToastContainer } from 'react-bootstrap';
+import { ToastContainer } from 'react-toastify';
 import './App.css';
 import IndexRoute from './routes/IndexRoute';
 
@@ -7,17 +7,17 @@ function App() {
     	<div className='w-100' style={{ height: "100vh" }}>
 		  	<IndexRoute />
 		  	<ToastContainer
-				position="bottom-right"
-				autoClose={3000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
+			  	position="bottom-right"
+				autoClose={4000}
+				hideProgressBar="false"
+				newestontop="false"
+				closeOnclick="true"
+				pauseonfocusloss="true"
+				draggable="true"
+				pauseonhover="true"
 				theme="light"
-		  	/>
+		  />
+		  
 		</div>
   	);
 }

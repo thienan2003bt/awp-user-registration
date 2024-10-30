@@ -1,17 +1,51 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import UserService from '../services/user.service';
+import { UserContext } from '../context/user.context';
+import UserValidator from '../validators/user.validator';
+import { ToastContext } from '../context/toast.context';
 
 function RegisterPage(props) {
     const navigate = useNavigate();
 
+    const { setUser } = useContext(UserContext);
+    const { showToast } = useContext(ToastContext);
+
     const [inputs, setInputs] = useState({ email: "", username: "", password: "" });
+    const [isLoading, setIsLoading] = useState(false);
+
+    const onSubmitRegistration = async (e) => {
+        e.preventDefault();
+        if (UserValidator.validateRegister(inputs) === false) {
+            showToast("Invalid inputs. Please check your inputs again.", "error");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const response = await UserService.registerUser(inputs);
+            if (response && response.data) {
+                setUser(response.data);
+
+                showToast(response.message);
+                navigate("/");
+            } else {
+                showToast(response?.message ?? "Error registering user, please try again!", "error");
+            }
+        } catch (error) {
+            console.error("Error registering user: ", error);
+            showToast(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     return (
-        <div className='w-100 text-bg-light d-flex flex-column align-items-center justify-content-center'
-            style={{ height: "80vh" }}
+        <div className='w-100 text-bg-light d-flex flex-column align-items-center justify-content-center py-2'
+            // style={{ height: "80vh" }}
         >
-            <Form className='w-50 bg-primary-subtle p-3'>
+            <Form className='w-50 bg-primary-subtle p-3' onSubmit={(e) => onSubmitRegistration(e)}>
                 <h1 className='w-100 text-center mb-4'>Registration Form</h1>
 
                 <Form.Group className="mb-4" controlId="formBasicUsername">
@@ -60,13 +94,14 @@ function RegisterPage(props) {
 
                 <hr />
                 <div className='w-100 d-flex flex-column justify-content-center gap-3 align-items-center'>
-                    <Button variant="success" type="submit" style={{ width: "200px", height: "60px", fontSize: "24px"}}>
-                        Submit
+                    <Button variant="success" type="submit" style={{ width: "200px", height: "60px", fontSize: "24px" }}
+                    >
+                        { isLoading === true ? "Loading ..." : "Submit"}
                     </Button>
 
                     <div className='d-flex justify-content-center gap-4'>
-                        <Button variant='primary' onClick={() => navigate("/")}>Go to Home</Button>
-                        <Button variant='secondary' onClick={() => navigate("/login")}>Go to Login</Button>
+                        <Button variant='primary'  type="button" onClick={() => navigate("/")}>Go to Home</Button>
+                        <Button variant='secondary' type="button"  onClick={() => navigate("/login")}>Go to Login</Button>
                     </div>
                 </div>
             </Form>
