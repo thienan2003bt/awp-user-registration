@@ -10,7 +10,7 @@ function PrivateRoute(props) {
 
     useEffect(() => {
         const userData = LocalStorageHelper.getItem("user");
-        if(userData && userData?.email) {
+        if(userData && userData?.accessToken) {
             setUser(userData);
         }
         setIsUserFetched(true);
@@ -24,7 +24,7 @@ function PrivateRoute(props) {
 
     return (
         <>
-            {(user && user.email)
+            {(user && user.accessToken)
                 ? <>
                     {children}
                 </>

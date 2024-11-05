@@ -29,11 +29,13 @@ function LoginPage(props) {
             const response = await UserService.loginUser(inputs);
             if (response && response.data) {
                 setUser({
-                    ...response.data?.user,
+                    id: response.data?.user?.id,
                     accessToken: response.data?.accessToken
                 });
-                LocalStorageHelper.setItem("user", response.data?.user);
-                LocalStorageHelper.setItem("accessToken", response.data?.accessToken);
+                LocalStorageHelper.setItem("user", {
+                    id: response.data?.user?.id,
+                    accessToken: response.data?.accessToken
+                });
 
                 showToast(response.message);
                 navigate("/");

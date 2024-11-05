@@ -1,11 +1,17 @@
 import axios from 'axios';
+import LocalStorageHelper from '../helpers/localstorage.helper';
 
 const instance = axios.create({
     baseURL: process.env.REACT_APP_SERVER_URL,
+    withCredentials: true,
 });
 
 //REQUEST INTERCEPTOR
 instance.interceptors.request.use((config) => {
+    const token = LocalStorageHelper.getItem('user')?.accessToken;
+    if (token) {
+        config.headers['Authorization'] = `${token}`;
+    }
     return config;
 }, (err) => {
     return Promise.reject(err);
@@ -29,12 +35,16 @@ instance.interceptors.response.use((response) => {
                 throw new  Error('Cannot calling API for refreshing tokens');
             }
             
+            LocalStorageHelper.setItem('user', {
+                id: response?.data?.user?.id,
+                accessToken: response?.data?.accessToken,
+            });
             originalRequest.headers['Authorization'] = `${response.data.accessToken}`;
 
             return instance(originalRequest);
         } catch (refreshError) {
             console.error('Failed to refresh token:', refreshError);
-            window.location.href = '/login';
+            // window.location.href = '/login';
         }
     }
 
