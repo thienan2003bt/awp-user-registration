@@ -2,14 +2,12 @@ import React, { useContext, useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/user.service';
-import { UserContext } from '../context/user.context';
 import UserValidator from '../validators/user.validator';
 import { ToastContext } from '../context/toast.context';
 
 function RegisterPage(props) {
     const navigate = useNavigate();
 
-    const { setUser } = useContext(UserContext);
     const { showToast } = useContext(ToastContext);
 
     const [inputs, setInputs] = useState({ email: "", username: "", password: "" });
@@ -26,10 +24,8 @@ function RegisterPage(props) {
         try {
             const response = await UserService.registerUser(inputs);
             if (response && response.data) {
-                setUser(response.data);
-
                 showToast(response.message);
-                navigate("/");
+                navigate("/login");
             } else {
                 showToast(response?.message ?? "Error registering user, please try again!", "error");
             }
