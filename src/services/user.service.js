@@ -9,6 +9,10 @@ class UserService {
         return await axios.post("/user/login", user);
     }
 
+    static async logout() {
+        return await axios.get("/user/logout");
+    }
+
     static async getUserProfile() {
         return await axios.get("/user/profile");
     }

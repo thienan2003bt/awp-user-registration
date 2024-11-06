@@ -28,23 +28,21 @@ instance.interceptors.response.use((response) => {
     const originalRequest = error.config;
 
     if (error.response && error.response.status === 401 && error.response.data.message === 'Token has expired!') {
-      // Token has expired, request a new token pair
         try {
             const response = await instance.get('/user/invoke-new-tokens');
             if (!response || !response.data || !response.data.accessToken) {
-                throw new  Error('Cannot calling API for refreshing tokens');
+                throw new Error('Cannot calling API for refreshing tokens');
             }
             
             LocalStorageHelper.setItem('user', {
                 id: response?.data?.user?.id,
                 accessToken: response?.data?.accessToken,
             });
-            originalRequest.headers['Authorization'] = `${response.data.accessToken}`;
 
             return instance(originalRequest);
         } catch (refreshError) {
             console.error('Failed to refresh token:', refreshError);
-            // window.location.href = '/login';
+            window.location.href = '/login';
         }
     }
 
